@@ -3,10 +3,8 @@
 //
 #include <iostream>
 #include <thread>
-#include <cstring>
 #include "../include/Server.h"
 #include "../include/FileHandler.h"
-#include "../include/Consts.h"
 
 using namespace std;
 
@@ -14,7 +12,7 @@ Server::Server(const Client &client) : client(client) {}
 
 void Server::run() const {
 
-    vector<string> fileNames = FileHandler::readDirectoryFileNames(Consts::kFilesDirectory);
+    vector<string> fileNames = FileHandler::readDirectoryFileNames(FileHandler::kFilesDirectory);
 
     // 01
     // Send the number of files
@@ -53,31 +51,19 @@ void Server::run() const {
         // Send the file size
         client.getStream().writeInt(fileSize);
 
-        long bytesSent = 0;
-        long totalBytesSent = 0;
         const size_t kBufferSize = 1024;
         char buffer[kBufferSize];
-        int bytesRead = 0;
-        int totalBytesRead = 0;
 
         while (!feof(pFile)) {
             // 07
             client.getStream().writeString("_continue");
-            bytesRead = static_cast<int>(fread(buffer, sizeof(unsigned char), kBufferSize, pFile));
-            totalBytesRead += bytesRead;
+            fread(buffer, sizeof(unsigned char), kBufferSize, pFile);
 
             // TODO: implement protocol for confirmation of bytes received by the client
 
             // 08
-            // Send the number of bytes on the way
-            // client.getStream().writeInt(bytesRead);
-
-            // 09
             // Send buffer to client
             client.getStream().writeBytes(buffer, kBufferSize);
-
-            // 10
-            // Confirms the number of bytes that the client received
         }
 
         client.getStream().writeString("_end_of_file");
@@ -86,15 +72,10 @@ void Server::run() const {
         client.getStream().writeString("Something wrong happened.");
         cout << e.what() << endl;
     }
+
 }
 
-void Server::start() {
-
+void Server::start() const {
     thread t(&Server::run, this);
-    t.join();
-}
-
-void Server::sendFile(const string &fileName) const {
-
-
+    t.detach();
 }

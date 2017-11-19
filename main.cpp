@@ -1,37 +1,28 @@
 #include <iostream>
 #include <thread>
-#include <vector>
 
 #include "lib/netry/include/ServerSocket.h"
-#include "include/Server.h"
-#include "include/Consts.h"
+#include "include/ServerPool.h"
 
 using namespace netry;
 using namespace std;
 
-void run() {
-    ServerSocket ss(5000);
-
-    cout << "Server on waiting for connections" << endl;
-    Socket sk = ss.accept();
-    Client c(sk);
-    Server s(c);
-    s.start();
-
-    sk.close();
-    ss.close();
+void run(const ServerPool &serverPool) {
+    cout << "Server on" << endl;
+    serverPool.start();
 }
 
 int main() {
+    ServerPool serverPool;
 
-    thread t(run);
-    t.join();
+    thread t(run, serverPool);
+    t.detach();
 
-/*    string str;
+    string input;
+
     do {
-        cin >> str;
-        cout << ": " << str << endl;
-    } while (str != Consts::kExit);*/
+        cin >> input;
+    } while (input != "exit");
 
     return 0;
 }

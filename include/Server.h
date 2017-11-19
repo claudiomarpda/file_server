@@ -15,15 +15,20 @@ private:
 
     Client client;
 
+    /**
+    * Implements a protocol allowing clients to download files
+    */
     void run() const;
-
-    void sendFile(const string &fileName) const;
 
 public:
 
+    // Explicit avoids implicit cast
     explicit Server(const Client &client);
 
-    void start();
+    /**
+     * Starts thread to attend a client
+     */
+    void start() const;
 
 };
 

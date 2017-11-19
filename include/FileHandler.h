@@ -13,11 +13,13 @@ using namespace std;
 
 namespace FileHandler {
 
+   const string kFilesDirectory = "resources/";
+
     /**
+    * Read the name of all files in the given directory
     * @see http://pubs.opengroup.org/onlinepubs/7908799/xsh/dirent.h.html
     *
-    * @param directoryName
-    * @return
+    * @return a vector with all names
     */
     vector<string> readDirectoryFileNames(const string &directoryName) {
 
@@ -52,23 +54,12 @@ namespace FileHandler {
         return filesNames;
     }
 
-/*    FILE *openInputFile(const string &name) throw(InfraException) {
-
-        const string kPath = "resources/";
-
-        string strFullName = kPath + name;
-        // Convert the string to const char
-        const char *charFullName = strFullName.c_str();
-
-        FILE *inFile = fopen(charFullName, "rb");
-
-        if (!inFile) {
-            throw InfraException("File could not be opened");
-        }
-        return inFile;
-    }*/
-
-    FILE* openFile(const string &name, const string &type) throw(InfraException) {
+    /**
+     * @see http://www.cplusplus.com/reference/cstdio/fopen/
+     *
+     * @return a pointer to a file
+     */
+    FILE *openFile(const string &name, const string &type) throw(InfraException) {
         const string kPath = "resources/";
 
         string strFullName = kPath + name;
@@ -84,11 +75,17 @@ namespace FileHandler {
         return inFile;
     }
 
-    FILE* openOutputFile(const string &name) throw(InfraException) {
+    /**
+     * Open a file for writing
+     */
+    FILE *openOutputFile(const string &name) throw(InfraException) {
         return openFile(name, "wb");
     }
 
-    FILE* openInputFile(const string &name) throw(InfraException) {
+    /**
+     * Open a file for reading
+     */
+    FILE *openInputFile(const string &name) throw(InfraException) {
         return openFile(name, "rb");
     }
 }
